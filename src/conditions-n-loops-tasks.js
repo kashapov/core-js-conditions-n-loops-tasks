@@ -306,7 +306,7 @@ function getBalanceIndex(arr) {
   let leftSum = 0;
   for (let i = 0; i < arr.length; i += 1) {
     const rightSum = total - leftSum - arr[i];
-    if (leftSum === rightSum) {
+    if (i > 0 && i < arr.length - 1 && leftSum === rightSum) {
       return i;
     }
     leftSum += arr[i];
@@ -426,8 +426,40 @@ function rotateMatrix(matrix) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
-function sortByAsc(/* arr */) {
-  throw new Error('Not implemented');
+function sortByAsc(arr) {
+  const a = arr;
+
+  function swap(i, j) {
+    const temp = a[i];
+    a[i] = a[j];
+    a[j] = temp;
+  }
+
+  function partition(low, high) {
+    const mid = low + Math.floor((high - low) / 2);
+    swap(mid, high);
+    const pivot = a[high];
+    let i = low;
+    for (let j = low; j < high; j += 1) {
+      if (a[j] < pivot) {
+        swap(i, j);
+        i += 1;
+      }
+    }
+    swap(i, high);
+    return i;
+  }
+
+  function quickSort(low, high) {
+    if (low < high) {
+      const p = partition(low, high);
+      quickSort(low, p - 1);
+      quickSort(p + 1, high);
+    }
+  }
+
+  quickSort(0, a.length - 1);
+  return a;
 }
 
 /**
