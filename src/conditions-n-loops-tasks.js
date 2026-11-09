@@ -479,8 +479,34 @@ function sortByAsc(arr) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
+function shuffleChar(str, iterations) {
+  function nextShuffle(s) {
+    let even = '';
+    let odd = '';
+    for (let i = 0; i < s.length; i += 1) {
+      if (i % 2 === 0) {
+        even += s[i];
+      } else {
+        odd += s[i];
+      }
+    }
+    return even + odd;
+  }
+
+  let current = str;
+  for (let i = 0; i < iterations; i += 1) {
+    current = nextShuffle(current);
+    if (current === str) {
+      const cycle = i + 1;
+      const rest = iterations % cycle;
+      current = str;
+      for (let j = 0; j < rest; j += 1) {
+        current = nextShuffle(current);
+      }
+      return current;
+    }
+  }
+  return current;
 }
 
 /**
@@ -501,8 +527,52 @@ function shuffleChar(/* str, iterations */) {
  * 321321   => 322113
  *
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  const digits = [];
+  let n = number;
+  while (n > 0) {
+    digits[digits.length] = n % 10;
+    n = (n - (n % 10)) / 10;
+  }
+  for (let i = 0; i < digits.length / 2; i += 1) {
+    const temp = digits[i];
+    digits[i] = digits[digits.length - 1 - i];
+    digits[digits.length - 1 - i] = temp;
+  }
+
+  const len = digits.length;
+  let i = len - 2;
+  while (i >= 0 && digits[i] >= digits[i + 1]) {
+    i -= 1;
+  }
+  if (i < 0) {
+    return number;
+  }
+
+  let j = len - 1;
+  while (digits[j] <= digits[i]) {
+    j -= 1;
+  }
+
+  let temp = digits[i];
+  digits[i] = digits[j];
+  digits[j] = temp;
+
+  let left = i + 1;
+  let right = len - 1;
+  while (left < right) {
+    temp = digits[left];
+    digits[left] = digits[right];
+    digits[right] = temp;
+    left += 1;
+    right -= 1;
+  }
+
+  let result = 0;
+  for (let k = 0; k < len; k += 1) {
+    result = result * 10 + digits[k];
+  }
+  return result;
 }
 
 module.exports = {
